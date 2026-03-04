@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 620" font-family="Segoe UI, Arial, sans-serif">
+
+  <!-- Background -->
+  <rect width="860" height="620" fill="#F8FAFC" rx="12"/>
+
+  <!-- Title -->
+  <text x="430" y="38" text-anchor="middle" font-size="17" font-weight="bold" fill="#1E293B">Multi-Document RAG System — Architecture</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- LANE LABELS -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- Ingestion Lane -->
+  <rect x="20" y="55" width="380" height="510" rx="10" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5"/>
+  <text x="210" y="80" text-anchor="middle" font-size="12" font-weight="bold" fill="#1D4ED8">📄  INGESTION PIPELINE  (run once / on new docs)</text>
+
+  <!-- Query Lane -->
+  <rect x="460" y="55" width="380" height="510" rx="10" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>
+  <text x="650" y="80" text-anchor="middle" font-size="12" font-weight="bold" fill="#15803D">🔍  QUERY PIPELINE  (per request)</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- SHARED / CENTRE components -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- FAISS Index (centre, shared) -->
+  <rect x="320" y="310" width="220" height="54" rx="8" fill="#FEF9C3" stroke="#FDE047" stroke-width="2"/>
+  <text x="430" y="331" text-anchor="middle" font-size="12" font-weight="bold" fill="#713F12">Vector Store</text>
+  <text x="430" y="349" text-anchor="middle" font-size="10" fill="#92400E">FAISS Persistent Index (.bin)</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- INGESTION LANE NODES -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- PDF Files -->
+  <rect x="60" y="100" width="200" height="50" rx="8" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="160" y="121" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E40AF">PDF Documents</text>
+  <text x="160" y="138" text-anchor="middle" font-size="10" fill="#3B82F6">documents/ folder (multi-file)</text>
+
+  <!-- PDF Loader -->
+  <rect x="60" y="195" width="200" height="50" rx="8" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="160" y="216" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E40AF">PDF Loader</text>
+  <text x="160" y="233" text-anchor="middle" font-size="10" fill="#3B82F6">Extract raw text per page</text>
+
+  <!-- Text Chunker -->
+  <rect x="60" y="290" width="200" height="50" rx="8" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="160" y="311" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E40AF">Text Chunker</text>
+  <text x="160" y="328" text-anchor="middle" font-size="10" fill="#3B82F6">Chunk + attach source metadata</text>
+
+  <!-- Embedding Model (ingestion) -->
+  <rect x="60" y="385" width="200" height="50" rx="8" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="160" y="406" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E40AF">Embedding Model</text>
+  <text x="160" y="423" text-anchor="middle" font-size="10" fill="#3B82F6">SentenceTransformers → vectors</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- QUERY LANE NODES -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- User / FastAPI -->
+  <rect x="600" y="100" width="200" height="50" rx="8" fill="#DCFCE7" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="700" y="121" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">User Query</text>
+  <text x="700" y="138" text-anchor="middle" font-size="10" fill="#16A34A">POST /ask  →  FastAPI</text>
+
+  <!-- Query Embedding -->
+  <rect x="600" y="195" width="200" height="50" rx="8" fill="#DCFCE7" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="700" y="216" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">Query Embedding</text>
+  <text x="700" y="233" text-anchor="middle" font-size="10" fill="#16A34A">SentenceTransformers → vector</text>
+
+  <!-- Similarity Search -->
+  <rect x="600" y="290" width="200" height="50" rx="8" fill="#DCFCE7" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="700" y="311" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">Similarity Search</text>
+  <text x="700" y="328" text-anchor="middle" font-size="10" fill="#16A34A">Top-k chunks + source metadata</text>
+
+  <!-- LLM -->
+  <rect x="600" y="385" width="200" height="50" rx="8" fill="#DCFCE7" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="700" y="406" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">LLM Generation</text>
+  <text x="700" y="423" text-anchor="middle" font-size="10" fill="#16A34A">Flan-T5  (context-grounded prompt)</text>
+
+  <!-- Response -->
+  <rect x="600" y="480" width="200" height="50" rx="8" fill="#DCFCE7" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="700" y="501" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">Response</text>
+  <text x="700" y="518" text-anchor="middle" font-size="10" fill="#16A34A">Answer + source attribution</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- INGESTION ARROWS -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- PDF Docs → PDF Loader -->
+  <line x1="160" y1="150" x2="160" y2="193" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- PDF Loader → Text Chunker -->
+  <line x1="160" y1="245" x2="160" y2="288" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- Text Chunker → Embedding Model -->
+  <line x1="160" y1="340" x2="160" y2="383" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- Embedding Model → FAISS (right) -->
+  <path d="M 260 410 Q 320 410 320 337" fill="none" stroke="#3B82F6" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowBlue)"/>
+  <text x="278" y="400" font-size="9" fill="#1D4ED8">store</text>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- QUERY ARROWS -->
+  <!-- ═══════════════════════════════════════════════ -->
+
+  <!-- User → Query Embedding -->
+  <line x1="700" y1="150" x2="700" y2="193" stroke="#16A34A" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- Query Embedding → Similarity Search -->
+  <line x1="700" y1="245" x2="700" y2="288" stroke="#16A34A" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- FAISS → Similarity Search (left to right) -->
+  <path d="M 540 337 Q 580 337 580 315 L 598 315" fill="none" stroke="#CA8A04" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowGold)"/>
+  <text x="548" y="328" font-size="9" fill="#92400E">retrieve</text>
+
+  <!-- Similarity Search → LLM -->
+  <line x1="700" y1="340" x2="700" y2="383" stroke="#16A34A" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- LLM → Response -->
+  <line x1="700" y1="435" x2="700" y2="478" stroke="#16A34A" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ARROW MARKERS -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <defs>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3B82F6"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#16A34A"/>
+    </marker>
+    <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#CA8A04"/>
+    </marker>
+  </defs>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- LEGEND -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <rect x="30" y="545" width="800" height="50" rx="8" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+  <line x1="55" y1="570" x2="85" y2="570" stroke="#3B82F6" stroke-width="2"/>
+  <text x="90" y="574" font-size="10" fill="#1E40AF">Ingestion flow</text>
+  <line x1="185" y1="570" x2="215" y2="570" stroke="#16A34A" stroke-width="2"/>
+  <text x="220" y="574" font-size="10" fill="#166534">Query flow</text>
+  <line x1="300" y1="570" x2="330" y2="570" stroke="#CA8A04" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="335" y="574" font-size="10" fill="#92400E">FAISS read/write</text>
+  <rect x="440" y="562" width="12" height="12" rx="2" fill="#FEF9C3" stroke="#FDE047"/>
+  <text x="458" y="574" font-size="10" fill="#713F12">Shared component (Vector Store)</text>
+  <text x="680" y="574" font-size="9" fill="#94A3B8">github.com/K-Shantanu</text>
+
+</svg>
