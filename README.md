@@ -2,19 +2,19 @@
 
 ## Overview
 
-This project implements a Retrieval-Augmented Generation (RAG) system for question answering over PDF documents.
+This project implements a Retrieval-Augmented Generation (RAG) system for answering questions over multiple PDF documents.
 
-The application allows users to ask natural language questions about a document. Instead of relying purely on a language model, the system retrieves relevant sections of the document using semantic search and generates answers grounded in the retrieved context.
+The application allows users to ask natural language questions about a collection of documents. Instead of relying purely on a language model, the system retrieves relevant sections of documents using semantic search and generates answers grounded in the retrieved context.
 
-The entire pipeline runs locally and does not require paid external APIs.
+The system runs locally and exposes a REST API using FastAPI. It also supports containerized deployment using Docker.
 
 ---
 
 ## Motivation
 
-Large language models often produce incorrect or hallucinated responses when they do not have access to supporting information. RAG addresses this issue by retrieving relevant content before generating an answer.
+Large language models can produce incorrect or hallucinated responses when they lack access to relevant information. Retrieval-Augmented Generation addresses this limitation by retrieving relevant context from external data sources before generating a response.
 
-This project was built to understand and implement the core components of a RAG pipeline from scratch, including document ingestion, embedding generation, vector search, context retrieval, and answer generation.
+This project demonstrates how to build a simple but complete RAG pipeline from scratch, including document ingestion, vector embeddings, similarity search, and answer generation.
 
 ---
 
@@ -22,29 +22,27 @@ This project was built to understand and implement the core components of a RAG 
 
 The system follows this pipeline:
 
-1. Extract text from a PDF document  
-2. Split text into overlapping chunks  
-3. Convert chunks into vector embeddings  
-4. Store embeddings in a FAISS index  
-5. Convert the user query into an embedding  
-6. Retrieve the most similar chunks  
-7. Inject retrieved context into a prompt  
-8. Generate an answer using a local language model  
-9. Serve responses through a FastAPI endpoint  
-
-This architecture mirrors the design used in production document QA systems.
+1. Load multiple PDF documents  
+2. Extract text from documents  
+3. Split text into overlapping chunks  
+4. Generate semantic embeddings for each chunk  
+5. Store embeddings in a FAISS vector index  
+6. Convert user queries into embeddings  
+7. Retrieve the most relevant chunks using similarity search  
+8. Provide retrieved context to a language model  
+9. Generate an answer grounded in the retrieved information  
 
 ---
 
 ## Tech Stack
 
-- Python
-- FastAPI
-- SentenceTransformers
-- FAISS (CPU)
-- HuggingFace Transformers (Flan-T5)
-- PyPDF
-- Docker
+Python  
+FastAPI  
+SentenceTransformers  
+FAISS (vector search)  
+HuggingFace Transformers (Flan-T5)  
+PyPDF  
+Docker  
 
 ---
 
@@ -54,14 +52,13 @@ This architecture mirrors the design used in production document QA systems.
 rag_system/
 │
 ├── app/
-│   ├── main.py          # FastAPI entry point
-│   ├── ingestion.py     # PDF loading and chunking
+│   ├── main.py          # FastAPI application
+│   ├── ingestion.py     # Document loading and chunking
 │   ├── embedding.py     # Embedding generation
-│   ├── retrieval.py     # FAISS indexing and similarity search
-│   └── llm.py           # Answer generation logic
+│   ├── retrieval.py     # FAISS index and similarity search
+│   └── llm.py           # Answer generation
 │
-├── data/
-│   └── sample.pdf
+├── documents/           # Folder containing PDF files
 │
 ├── Dockerfile
 ├── requirements.txt
@@ -70,34 +67,20 @@ rag_system/
 
 ---
 
-## How It Works
+## Key Features
 
-### Document Ingestion
-Text is extracted from PDF files using PyPDF and combined into a single document string.
-
-### Chunking
-The text is split into fixed-size chunks with overlap to preserve semantic continuity across chunk boundaries.
-
-### Embeddings
-Each chunk is converted into a dense vector using a SentenceTransformers model (`all-MiniLM-L6-v2`). These embeddings capture semantic meaning rather than simple keyword matches.
-
-### Vector Index
-Embeddings are stored in a FAISS index to enable efficient similarity search.
-
-### Retrieval
-When a question is submitted:
-- The query is embedded
-- The top-k most similar chunks are retrieved
-- Retrieved text is combined into contextual input for the language model
-
-### Generation
-A local HuggingFace seq2seq model (Flan-T5) generates an answer based only on the retrieved context.
-
-The answer is returned through a REST API built with FastAPI.
+- Multi-document PDF ingestion
+- Text chunking with overlap
+- Semantic embeddings using SentenceTransformers
+- Vector similarity search using FAISS
+- Context-grounded answer generation
+- FastAPI REST API
+- Docker containerization
+- Persistent FAISS index for faster startup
 
 ---
 
-## Running Locally
+## Running the Project Locally
 
 ### 1. Create a virtual environment
 
@@ -118,7 +101,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Open the API documentation at:
+Open the API documentation:
 
 ```
 http://localhost:8000/docs
@@ -140,7 +123,7 @@ docker build -t rag-system .
 docker run -p 8000:8000 rag-system
 ```
 
-Access the API at:
+Access the API:
 
 ```
 http://localhost:8000/docs
@@ -152,7 +135,7 @@ http://localhost:8000/docs
 
 Endpoint:
 
-POST /ask
+POST `/ask`
 
 Request body:
 
@@ -162,13 +145,18 @@ Request body:
 }
 ```
 
-Response format:
+Example response:
 
 ```json
 {
   "question": "...",
   "answer": "...",
-  "retrieved_context": [...]
+  "retrieved_context": [
+    {
+      "text": "...",
+      "source": "sample.pdf"
+    }
+  ]
 }
 ```
 
@@ -176,21 +164,19 @@ Response format:
 
 ## Limitations
 
-- Uses a small local language model for demonstration
-- Answer quality depends on model size and context length
-- No reranking or advanced retrieval optimization
-- Intended as an educational and portfolio project
+- Uses a small local language model for demonstration purposes
+- Answer quality depends on model size and context quality
+- Designed as a learning and portfolio project rather than a production system
 
 ---
 
 ## Possible Improvements
 
-- Integrate a larger open-source model
-- Add reranking for improved retrieval accuracy
-- Implement sentence-aware chunking
-- Add embedding caching
+- Use a larger language model
+- Add reranking for improved retrieval quality
+- Implement metadata filtering for document selection
+- Add a simple frontend interface
 - Deploy to a cloud environment
-- Add streaming responses
 
 ---
 
@@ -200,7 +186,7 @@ This project demonstrates:
 
 - End-to-end RAG implementation
 - Embedding-based semantic retrieval
-- Vector database integration
+- Vector search using FAISS
 - Context-grounded answer generation
-- REST API deployment
+- API deployment with FastAPI
 - Containerization using Docker
