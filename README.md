@@ -83,7 +83,7 @@ rag_system/
 ## System Architecture
 
 <p align="center">
-  <img src="docs/architecture.svg" width="750">
+  <img src="docs/rag_architecture.svg" width="750">
 </p>
 
 ## Running the Project Locally
