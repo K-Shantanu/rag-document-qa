@@ -8,22 +8,24 @@ model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
 def generate_answer(context, question):
     prompt = f"""
-Extract the exact answer from the context.
+    You are answering questions about a document.
 
-Context:
-{context}
+    Use only the context below to answer the question.
 
-Question: {question}
+    Context:
+    {context}
 
-Answer with only the name. Do not add numbering. Do not add extra words.
-Answer:
-"""
+    Question:
+    {question}
+
+    Answer:
+    """
 
     inputs = tokenizer(prompt, return_tensors="pt", truncation=True)
     
     outputs = model.generate(
     **inputs,
-    max_new_tokens=30,
+    max_new_tokens=50,
     temperature=0.0,
     do_sample=False,
     eos_token_id=tokenizer.eos_token_id
