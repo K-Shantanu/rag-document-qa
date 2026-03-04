@@ -80,6 +80,12 @@ rag_system/
 
 ---
 
+## System Architecture
+
+<p align="center">
+  <img src="docs/architecture.svg" width="750">
+</p>
+
 ## Running the Project Locally
 
 ### 1. Create a virtual environment
